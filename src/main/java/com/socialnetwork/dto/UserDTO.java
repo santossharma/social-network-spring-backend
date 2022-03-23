@@ -1,5 +1,6 @@
 package com.socialnetwork.dto;
 
+import com.socialnetwork.enums.UserStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,5 +14,7 @@ public class UserDTO {
     private String lastName;
     private String login;
     private String token;
+    private UserStatus status;
+    private int age;
 
 }

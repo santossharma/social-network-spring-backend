@@ -5,9 +5,10 @@ import com.socialnetwork.dto.MessageDTO;
 import com.socialnetwork.dto.UserDTO;
 import com.socialnetwork.entities.Message;
 import com.socialnetwork.entities.User;
+import com.socialnetwork.mappers.MessageMapper;
 import com.socialnetwork.repositories.MessageRepository;
 import com.socialnetwork.repositories.UserRepository;
-import org.springframework.data.domain.Page;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,6 +20,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class CommunityService {
 
     private static final  int PAGE_SIZE = 10;
@@ -26,10 +28,6 @@ public class CommunityService {
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
 
-    public CommunityService(MessageRepository messageRepository, UserRepository userRepository) {
-        this.messageRepository = messageRepository;
-        this.userRepository = userRepository;
-    }
 
     public List<MessageDTO> getCommunityMessages(UserDTO userDTO, int page) {
 
@@ -41,11 +39,8 @@ public class CommunityService {
         friendsUserIds.add(user.getId());
 
         List<Message> messages = messageRepository.findCommunityMessages(friendsUserIds, PageRequest.of(page, PAGE_SIZE));
-        List<MessageDTO> messageDTOList = new ArrayList<>();
 
-        messages.forEach(message -> messageDTOList.add(new MessageDTO(message.getId(), message.getContent())));
-
-        return messageDTOList;
+        return MessageMapper.INSTANCE.messageToMessageDTOs(messages);
     }
 
     public List<ImageDTO> getCommunityImages(int page) {
@@ -55,8 +50,7 @@ public class CommunityService {
 
     public MessageDTO postMessages(UserDTO userDTO, MessageDTO messageDTO) {
         User user = getUser(userDTO);
-        Message message = new Message();
-        message.setContent(messageDTO.getContent());
+        Message message = MessageMapper.INSTANCE.messageDTOToMessage(messageDTO);
         message.setUser(user);
 
         LocalDate currentDate = LocalDate.now();
@@ -70,7 +64,7 @@ public class CommunityService {
 
         Message savedMessage = messageRepository.save(message);
 
-        return new MessageDTO(savedMessage.getId(), savedMessage.getContent());
+        return MessageMapper.INSTANCE.messageToMessageDTO(savedMessage);
     }
 
     public ImageDTO postImages(MultipartFile file, String title) {

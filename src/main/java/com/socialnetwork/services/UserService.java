@@ -2,7 +2,9 @@ package com.socialnetwork.services;
 
 import com.socialnetwork.dto.*;
 import com.socialnetwork.entities.User;
+import com.socialnetwork.mappers.UserMapper;
 import com.socialnetwork.repositories.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -11,22 +13,15 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     public ProfileDTO getProfile(Long userId) {
         User user = getUser(userId);
-        return new ProfileDTO(new UserSummaryDTO(user.getId(), user.getFirstName(), user.getLastName()),
-                null,
-                null,
-                null);
+        return UserMapper.INSTANCE.toProfileDTO(user);
     }
 
     public void addFriend(UserDTO userDTO, Long friendId) {
@@ -54,31 +49,18 @@ public class UserService {
         return usersToBeReturned;
     }
 
-    public UserDTO signUp(SignUpDTO userDto) {
-        Optional<User> optionalUser = userRepository.findByLogin(userDto.getLogin());
+    public UserDTO signUp(SignUpDTO userDTO) {
+        Optional<User> optionalUser = userRepository.findByLogin(userDTO.getLogin());
 
         if (optionalUser.isPresent()) {
             throw new RuntimeException("Login already exists");
         }
-
-        User user = new User(null,
-                userDto.getFirstName(),
-                userDto.getLastName(),
-                userDto.getLogin(),
-                passwordEncoder.encode(CharBuffer.wrap(userDto.getPassword())),
-                UUID.randomUUID().toString(),
-                null,
-                null,
-                LocalDateTime.now()
-        );
+        User user = UserMapper.INSTANCE.signUpToUser(userDTO);
+        user.setPassword(passwordEncoder.encode(CharBuffer.wrap(userDTO.getPassword())));
+        user.setToken(UUID.randomUUID().toString());
 
         User savedUser = userRepository.save(user);
-
-        return new UserDTO(savedUser.getId(),
-                savedUser.getFirstName(),
-                savedUser.getLastName(),
-                savedUser.getLogin(),
-                savedUser.getToken());
+        return UserMapper.INSTANCE.toUserDTO(savedUser);
     }
 
     public void signOut(UserDTO userDTO) {

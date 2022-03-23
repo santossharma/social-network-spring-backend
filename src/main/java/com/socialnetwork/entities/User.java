@@ -8,6 +8,7 @@ import org.hibernate.annotations.Parameter;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -45,6 +46,9 @@ public class User {
     @Size(max = 100)
     private String token;
 
+    @Column(name = "birth_date", nullable = false)
+    private LocalDate birthDate;
+
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private List<Message> messages;
@@ -63,13 +67,14 @@ public class User {
     public User() {
     }
 
-    public User(Long id, String firstName, String lastName, String login, String password, String token, List<Message> messages, List<User> friends, LocalDateTime createdDate) {
+    public User(Long id, String firstName, String lastName, String login, String password, String token, LocalDate birthDate, List<Message> messages, List<User> friends, LocalDateTime createdDate) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.login = login;
         this.password = password;
         this.token = token;
+        this.birthDate = birthDate;
         this.messages = messages;
         this.friends = friends;
         this.createdDate = createdDate;
@@ -145,5 +150,13 @@ public class User {
 
     public void setFriends(List<User> friends) {
         this.friends = friends;
+    }
+
+    public LocalDate getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
     }
 }
