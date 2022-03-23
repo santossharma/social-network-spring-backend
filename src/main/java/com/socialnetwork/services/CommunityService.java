@@ -5,11 +5,13 @@ import com.socialnetwork.dto.MessageDTO;
 import com.socialnetwork.dto.UserDTO;
 import com.socialnetwork.entities.Message;
 import com.socialnetwork.entities.User;
+import com.socialnetwork.exception.ApplicationException;
 import com.socialnetwork.mappers.MessageMapper;
 import com.socialnetwork.repositories.MessageRepository;
 import com.socialnetwork.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -73,6 +75,6 @@ public class CommunityService {
 
     private User getUser(UserDTO userDTO) {
         return userRepository.findById(userDTO.getId())
-                .orElseThrow(() -> new RuntimeException("User Not Found"));
+                .orElseThrow(() -> new ApplicationException("User Not Found", HttpStatus.NOT_FOUND));
     }
 }

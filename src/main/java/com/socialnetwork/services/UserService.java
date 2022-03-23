@@ -2,9 +2,11 @@ package com.socialnetwork.services;
 
 import com.socialnetwork.dto.*;
 import com.socialnetwork.entities.User;
+import com.socialnetwork.exception.ApplicationException;
 import com.socialnetwork.mappers.UserMapper;
 import com.socialnetwork.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -53,7 +55,7 @@ public class UserService {
         Optional<User> optionalUser = userRepository.findByLogin(userDTO.getLogin());
 
         if (optionalUser.isPresent()) {
-            throw new RuntimeException("Login already exists");
+            throw new ApplicationException("Login already exists", HttpStatus.BAD_REQUEST);
         }
         User user = UserMapper.INSTANCE.signUpToUser(userDTO);
         user.setPassword(passwordEncoder.encode(CharBuffer.wrap(userDTO.getPassword())));
@@ -72,6 +74,6 @@ public class UserService {
 
     private User getUser(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ApplicationException("User not found", HttpStatus.NOT_FOUND));
     }
 }
