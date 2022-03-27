@@ -1,5 +1,6 @@
 package com.socialnetwork.entities;
 
+import lombok.Builder;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -15,6 +16,7 @@ import java.util.List;
 @Entity
 @Table(name = "SOCIAL_NETWORK_USER")
 @EntityListeners(AuditingEntityListener.class)
+@Builder
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "socialNetworkUserSequenceGenerator")

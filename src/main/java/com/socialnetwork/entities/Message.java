@@ -1,5 +1,6 @@
 package com.socialnetwork.entities;
 
+import lombok.Builder;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.springframework.data.annotation.CreatedDate;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Table(name = "MESSAGE")
+@Builder
 public class Message {
 
     @Id
