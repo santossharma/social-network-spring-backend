@@ -6,6 +6,7 @@ import com.socialnetwork.exception.ApplicationException;
 import com.socialnetwork.mappers.UserMapper;
 import com.socialnetwork.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -51,6 +53,7 @@ public class UserService {
     }
 
     public UserDTO signUp(SignUpDTO userDTO) {
+        log.info("Signup for User {}",userDTO);
         Optional<User> optionalUser = userRepository.findByLogin(userDTO.getLogin());
 
         if (optionalUser.isPresent()) {

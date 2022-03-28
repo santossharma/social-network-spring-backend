@@ -1,9 +1,6 @@
 package com.socialnetwork.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
 
@@ -12,6 +9,7 @@ import javax.validation.constraints.NotEmpty;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@ToString
 public class SignUpDTO {
     @NotEmpty
     private String firstName;
