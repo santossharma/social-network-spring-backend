@@ -3,6 +3,7 @@ package com.socialnetwork.dto;
 import lombok.*;
 
 import javax.validation.constraints.NotEmpty;
+import java.util.Date;
 
 
 @Data
@@ -22,5 +23,8 @@ public class SignUpDTO {
 
     @NotEmpty
     private char[] password;
+
+    @NotEmpty
+    private Date dateOfBirth;
 
 }

@@ -12,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.nio.CharBuffer;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -62,6 +64,8 @@ public class UserService {
         User user = UserMapper.INSTANCE.signUpToUser(userDTO);
         user.setPassword(passwordEncoder.encode(CharBuffer.wrap(userDTO.getPassword())));
         user.setToken(UUID.randomUUID().toString());
+        user.setBirthDate(LocalDate.ofEpochDay(userDTO.getDateOfBirth().getTime() / 1000L));
+        user.setCreatedDate(LocalDateTime.now());
 
         User savedUser = userRepository.save(user);
         return UserMapper.INSTANCE.toUserDTO(savedUser);

@@ -17,9 +17,12 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -72,8 +75,13 @@ public class UserServiceTest {
 
     @Test
     void testAddFriend() {
+        LocalDate birthDate = LocalDate.of(1980, 2, 12);
+        Date dob = Date.from(birthDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
         // given
-        UserDTO userDto = new UserDTO(1L, "Santosh", "Sharma", "login", "token", UserStatus.CREATED, 42);
+        UserDTO userDto = new UserDTO(1L, "Santosh", "Sharma", "login", "token",
+                UserStatus.CREATED, 42,
+                dob);
+
         long friendId = 10L;
 
         Optional<User> user = Optional.of(User.builder()
@@ -105,8 +113,12 @@ public class UserServiceTest {
 
     @Test
     void testSignUp() {
+        LocalDate birthDate = LocalDate.of(1980, 2, 12);
+        Date dob = Date.from(birthDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
         // given
-        SignUpDTO signUpDto = new SignUpDTO("Santosh", "Sharma", "login", "pass".toCharArray());
+        SignUpDTO signUpDto = new SignUpDTO("Santosh", "Sharma", "login",
+                "pass".toCharArray(), dob);
 
         User user = User.builder()
                 .id(10L)
