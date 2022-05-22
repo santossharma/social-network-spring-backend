@@ -4,6 +4,7 @@ import com.socialnetwork.dto.CredentialsDTO;
 import com.socialnetwork.dto.UserDTO;
 import com.socialnetwork.entities.User;
 import com.socialnetwork.exception.ApplicationException;
+import com.socialnetwork.helper.LogExecutionTime;
 import com.socialnetwork.mappers.UserMapper;
 import com.socialnetwork.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ public class AuthenticationService {
     }*/
 
     @Transactional
+    @LogExecutionTime
     public UserDTO authenticate(CredentialsDTO credentialsDto) {
 
         User user = userRepository.findByLogin(credentialsDto.getLogin())
